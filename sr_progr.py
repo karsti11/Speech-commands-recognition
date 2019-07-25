@@ -115,10 +115,3 @@ model.compile(optimizer='adam',
 print("Model fitting...")
 
 model.fit(features_train_matrix, train_labels, epochs=30, validation_data=(features_test_matrix, test_labels))
-
-
-
-#model.evaluate(features_test_matrix, test_labels)
-
-# napravit sve da je automatski i da u random batchovima traina
-# napravit listu od imena fileova i ucitat audio fileove u matricu
