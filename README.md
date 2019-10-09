@@ -11,7 +11,7 @@ Features: Zero Crossing Rate, MFCC, Spectral Centroid, Spectral Rolloff
 
 Neural network: LSTM
 
-##SR-LSTM.py
+## SR-LSTM.py
 
 ####Model loss
 ![](images/Model_loss.png)
