@@ -13,12 +13,13 @@ Neural network: LSTM
 
 ## SR-LSTM.py
 
-####Model loss
+#### Model loss
 ![](images/Model_loss.png)
 
-####Model accuracy
+#### Model accuracy
+![](images/Model_acc.png)
 
-
-####Confusion matrix
-
-####Classification report
+#### Confusion matrix
+![](images/CM.png)
+#### Classification report
+![](images/CR.png)
