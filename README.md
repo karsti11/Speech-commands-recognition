@@ -10,3 +10,15 @@ Three-word classification
 Features: Zero Crossing Rate, MFCC, Spectral Centroid, Spectral Rolloff
 
 Neural network: LSTM
+
+##SR-LSTM.py
+
+####Model loss
+![](images/Model_loss.png)
+
+####Model accuracy
+
+
+####Confusion matrix
+
+####Classification report
