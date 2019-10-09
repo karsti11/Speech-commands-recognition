@@ -8,4 +8,5 @@ Three-word classification
   - SR-LSTM.py
 
 Features: Zero Crossing Rate, MFCC, Spectral Centroid, Spectral Rolloff
+
 Neural network: LSTM
