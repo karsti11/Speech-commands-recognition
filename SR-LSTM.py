@@ -54,7 +54,6 @@ def load_and_process(audio_path):
 	sr, audio_data = wavfile.read(audio_path)
 	audio_signal = signal.resample(audio_data, sample_rate)
 	audio_signal = audio_signal/np.amax(audio_signal)
-	#print(len(audio_signal))
 	zcr_signal = librosa.feature.zero_crossing_rate(audio_signal, frame_length=512, hop_length=410) #(1,32)
 	mfcc_signal = librosa.feature.mfcc(audio_signal,sample_rate, n_fft=1024, hop_length=410) # (20,32)
 	centr_signal = librosa.feature.spectral_centroid(audio_signal, sample_rate, n_fft=1024, hop_length=410)# (1,32)
@@ -69,11 +68,9 @@ validation_data = np.zeros((len(validation_list), 23, 40))
 
 for i in tqdm(range(0,len(train_list))):
 	train_data[i,:,:] = load_and_process(path + train_list[i])
-	#print(str(i) + ' out of ' + str(len(train_list)) + ' completed.')
 
 for i in tqdm(range(0,len(validation_list))):
 	validation_data[i,:,:] = load_and_process(path + validation_list[i])
-	#print(str(i) + ' out of ' + str(len(validation_list)) + ' completed.')
 
 
 def build_model():
@@ -100,8 +97,8 @@ model.summary()
 
 checkpoint_path = "D:/ML Python/Programi/SR/weights-best.hdf5"
 cp_callback = ModelCheckpoint(checkpoint_path,
-								monitor ='val_loss',
-								verbose = 1,
+				monitor ='val_loss',
+				verbose = 1,
                                 save_best_only=True,                               
                                 #error
                                 mode = 'min')
@@ -113,11 +110,12 @@ history = model.fit(train_data, train_labels,
  					callbacks = callbacks_list,
  					)
 
-model.load_weights('D:/ML Python/Programi/SR/weights-best.hdf5')
+model.load_weights('path/weights-best.hdf5')
 
 print(train_data.shape)
 print(validation_data.shape)
 
+#Plot training & validation accuracy
 history_dict = history.history
 print(history_dict.keys())
 plt.figure(1)
@@ -152,10 +150,7 @@ print(confusion_matrix(validation_labels,val_predict, labels = [0,1,2]))
 target_names = ['marvin','yes','no']
 print(classification_report(validation_labels,val_predict, target_names=target_names))
 
-
-
-# from sklearn.metrics import classification_report
-# print(classification_report(val_predict, validation_labels))
+# For more examples of confusion matrix plot, you can check here: https://stackoverflow.com/questions/19233771/sklearn-plot-confusion-matrix-with-labels/48018785
 def plot_confusion_matrix(y_true, y_pred, 
                           normalize=False,
                           title=None,
@@ -216,38 +211,6 @@ plot_confusion_matrix(validation_labels, val_predict, normalize=True,
                       title='Normalized confusion matrix')
 #classes=np.asarray([0,1,2])
 plt.show()
-
-
-
 target_names = ['marvin','yes','no']
 classif_report = classification_report(validation_labels,val_predict, target_names=target_names)
 print(classif_report)
-
-
-# mean = np.mean(spectrogram, axis=0)
-# std = np.std(spectrogram, axis=0)
-# spectrogram = (spectrogram - mean) / std
-# print(spectrogram.shape)
-# plt.imshow(spectrogram)
-# plt.show()
-
-# librosa.display.specshow(librosa.power_to_db(S, ref=np.max),y_axis='mel',fmax=8000,x_axis='time')
-# plt.colorbar(format='%+2.0f dB')
-# plt.title('Mel spectrogram')
-# plt.tight_layout()
-# plt.show()
-
-# fig = plt.figure(figsize=(14, 8))
-# ax1 = fig.add_subplot(211)
-# ax1.set_title('Raw wave of ' + 'yes/0f7dc557_nohash_1.wav')
-# ax1.set_ylabel('Amplitude')
-# ax1.plot(np.linspace(0, sample_rate/len(samples), sample_rate), samples)
-
-# ax2 = fig.add_subplot(212)
-# ax2.imshow(spectrogram.T, aspect='auto', origin='lower', 
-#            extent=[times.min(), times.max(), freqs.min(), freqs.max()])
-# ax2.set_yticks(freqs[::16])
-# ax2.set_xticks(times[::16])
-# ax2.set_title('Spectrogram of ' + 'yes/0f7dc557_nohash_1.wav')
-# ax2.set_ylabel('Freqs in Hz')
-# ax2.set_xlabel('Seconds')
