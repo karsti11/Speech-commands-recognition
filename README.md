@@ -26,4 +26,7 @@ Explanation of LSTM neural network: http://colah.github.io/posts/2015-08-Underst
 ![](images/CM.png)
 
 #### Classification report
+
+Acquired by using code from: https://stackoverflow.com/questions/28200786/how-to-plot-scikit-learn-classification-report
+
 ![](images/CR.png)
