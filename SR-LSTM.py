@@ -18,26 +18,21 @@ from sklearn.utils.multiclass import unique_labels
 from tqdm import tqdm
 import itertools
 
-#from tensorflow.keras.utils import to_categorical
 
-path = 'D:/ML Python/Programi/SpeechCommands/'
+
+path = 'D:/../../SpeechCommands/'
 
 dirs = os.listdir(path)
-train_df = pd.read_csv('D:/ML Python/Programi/SR/train_labels.csv')
-val_df = pd.read_csv('D:/ML Python/Programi/SR/val_labels.csv')
+train_df = pd.read_csv('D:/../../SR/train_labels.csv')
+val_df = pd.read_csv('D:/../../SR/val_labels.csv')
 train_df = train_df[:5489]
 val_df = val_df[:970]
 
 train_df = train_df.sample(frac=1)
 val_df = val_df.sample(frac=1)
-# train_labels = to_categorical(train_labels, num_classes=3)
-# validation_labels = to_categorical(validation_labels, num_classes=3)		
+		
 train_list = train_df['Filename'].tolist()
-#train_list = [x for x in train_list if "nohash" in x]
 validation_list = val_df['Filename'].tolist()
-#validation_list = [x for x in validation_list if "nohash" in x]
-#samples,sample_rate = librosa.load(path + 'yes/0c5027de_nohash_1.wav')
-#S = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128, fmax=8000)
 
 train_labels = train_df['Label'].tolist()
 validation_labels = val_df['Label'].tolist()
@@ -48,9 +43,9 @@ print(len(train_labels))
 print(len(validation_labels))
 
 sample_rate = 16000
-
+# Load speech signal and extract features from it
 def load_and_process(audio_path):
-	
+	# audio_path = path_to_file + file_name
 	sr, audio_data = wavfile.read(audio_path)
 	audio_signal = signal.resample(audio_data, sample_rate)
 	audio_signal = audio_signal/np.amax(audio_signal)
@@ -58,11 +53,11 @@ def load_and_process(audio_path):
 	mfcc_signal = librosa.feature.mfcc(audio_signal,sample_rate, n_fft=1024, hop_length=410) # (20,32)
 	centr_signal = librosa.feature.spectral_centroid(audio_signal, sample_rate, n_fft=1024, hop_length=410)# (1,32)
 	rolloff_signal = librosa.feature.spectral_rolloff(audio_signal,n_fft=1024, hop_length=410) # (1,32)
-	
+	# get features matrix by concatenating all features
 	features_mat = np.concatenate((zcr_signal, mfcc_signal, centr_signal, rolloff_signal), axis=0)
 	return features_mat
 
-
+# Feature matrix of all samples
 train_data = np.zeros((len(train_list), 23, 40))
 validation_data = np.zeros((len(validation_list), 23, 40))
 
@@ -72,7 +67,7 @@ for i in tqdm(range(0,len(train_list))):
 for i in tqdm(range(0,len(validation_list))):
 	validation_data[i,:,:] = load_and_process(path + validation_list[i])
 
-
+# Model design
 def build_model():
 	model = Sequential()
 	model.add(layers.LSTM(64,input_shape=(train_data.shape[1:]), return_sequences=True))
@@ -95,7 +90,8 @@ def build_model():
 model = build_model()
 model.summary()
 
-checkpoint_path = "D:/ML Python/Programi/SR/weights-best.hdf5"
+# Path for saving best weights
+checkpoint_path = "D:/../../SR/weights-best.hdf5"
 cp_callback = ModelCheckpoint(checkpoint_path,
 				monitor ='val_loss',
 				verbose = 1,
@@ -104,13 +100,13 @@ cp_callback = ModelCheckpoint(checkpoint_path,
                                 mode = 'min')
 
 callbacks_list = [cp_callback]
+
+# 
 history = model.fit(train_data, train_labels,
 					validation_data=(validation_data, validation_labels),
  					epochs=70,					
  					callbacks = callbacks_list,
  					)
-
-model.load_weights('path/weights-best.hdf5')
 
 print(train_data.shape)
 print(validation_data.shape)
@@ -126,7 +122,7 @@ plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train data', 'Test data'], loc='upper left')
 plt.grid(True)
-#plt.show()
+plt.show()
 
 # Plot training & validation loss values
 plt.figure(2)
@@ -139,10 +135,10 @@ plt.legend(['Train data', 'Test data'], loc='upper left')
 plt.grid(True)
 plt.show()
 
+#Load weights and apply to validation_data for prediction
+model.load_weights('path/weights-best.hdf5')
 val_predict = model.predict(validation_data)
 
-print(type(val_predict))
-print(type(validation_labels))
 validation_labels = np.asarray(validation_labels)
 val_predict = val_predict.argmax(axis=1)
 print(val_predict)
@@ -206,7 +202,7 @@ def plot_confusion_matrix(y_true, y_pred,
 
 np.set_printoptions(precision=2)
 
-# Plot non-normalized confusion matrix
+# Plot normalized confusion matrix
 plot_confusion_matrix(validation_labels, val_predict, normalize=True,
                       title='Normalized confusion matrix')
 #classes=np.asarray([0,1,2])
