@@ -3,14 +3,17 @@
 Three-word classification
 "Yes", "No" and "Marvin"
 
+Data acquired from Tensorflow: http://download.tensorflow.org/data/speech_commands_v0.01.tar.gz
+
 2 versions:
   - sr.progr.py
   - SR-LSTM.py
 
 Features: Zero Crossing Rate, MFCC, Spectral Centroid, Spectral Rolloff
 
-Neural network: LSTM
+Neural network: Long Short Term Memory
 
+Explanation of LSTM neural network: http://colah.github.io/posts/2015-08-Understanding-LSTMs/
 ## SR-LSTM.py
 
 #### Model loss
