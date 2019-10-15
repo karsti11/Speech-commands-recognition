@@ -101,7 +101,6 @@ cp_callback = ModelCheckpoint(checkpoint_path,
 
 callbacks_list = [cp_callback]
 
-# 
 history = model.fit(train_data, train_labels,
 					validation_data=(validation_data, validation_labels),
  					epochs=70,					
@@ -205,7 +204,7 @@ np.set_printoptions(precision=2)
 # Plot normalized confusion matrix
 plot_confusion_matrix(validation_labels, val_predict, normalize=True,
                       title='Normalized confusion matrix')
-#classes=np.asarray([0,1,2])
+
 plt.show()
 target_names = ['marvin','yes','no']
 classif_report = classification_report(validation_labels,val_predict, target_names=target_names)
